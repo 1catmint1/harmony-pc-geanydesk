@@ -1,0 +1,123 @@
+{
+  "module": {
+    "name": "entry",
+    "type": "entry",
+    "srcEntry": "./ets/abilitystage/MyAbilityStage.ets",
+    "description": "$string:module_desc",
+    "mainElement": "EntryAbility",
+    "deviceTypes": [
+      "2in1"
+    ],
+    "deliveryWithInstall": true,
+    "installationFree": false,
+    "requestPermissions": [],
+    "pages": "$profile:main_pages",
+    "abilities": [
+      {
+        "name": "EntryAbility",
+        "srcEntry": "./ets/entryability/EntryAbility.ets",
+        "launchType": "specified",
+        "description": "$string:EntryAbility_desc",
+        "icon": "$media:geanydesk_icon",
+        "label": "$string:EntryAbility_label",
+        "startWindowIcon": "$media:geanydesk_icon",
+        "startWindowBackground": "$color:start_window_background",
+        "exported": true,
+        "skills": [
+          {
+            "entities": [
+              "entity.system.home"
+            ],
+            "actions": [
+              "ohos.want.action.home"
+            ]
+          },
+          {
+            "actions": [
+              "ohos.want.action.viewData"
+            ],
+            "entities": [
+              "entity.system.default"
+            ],
+            "uris": [
+              {
+                "scheme": "file",
+                "type": "text/*",
+                "linkFeature": "FileOpen"
+              },
+              {
+                "scheme": "content",
+                "type": "text/*",
+                "linkFeature": "FileOpen"
+              },
+              {
+                "scheme": "file",
+                "type": "general.source-code",
+                "linkFeature": "FileOpen"
+              },
+              {
+                "scheme": "content",
+                "type": "general.source-code",
+                "linkFeature": "FileOpen"
+              },
+              {
+                "scheme": "file",
+                "type": "general.plain-text",
+                "linkFeature": "FileOpen"
+              },
+              {
+                "scheme": "content",
+                "type": "general.plain-text",
+                "linkFeature": "FileOpen"
+              },
+              {
+                "scheme": "file",
+                "type": "general.markdown",
+                "linkFeature": "FileOpen"
+              },
+              {
+                "scheme": "content",
+                "type": "general.markdown",
+                "linkFeature": "FileOpen"
+              },
+              {
+                "scheme": "file",
+                "type": "application/json",
+                "linkFeature": "FileOpen"
+              },
+              {
+                "scheme": "content",
+                "type": "application/json",
+                "linkFeature": "FileOpen"
+              },
+              {
+                "scheme": "file",
+                "type": "application/xml",
+                "linkFeature": "FileOpen"
+              },
+              {
+                "scheme": "content",
+                "type": "application/xml",
+                "linkFeature": "FileOpen"
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "extensionAbilities": [
+      {
+        "name": "EntryBackupAbility",
+        "srcEntry": "./ets/entrybackupability/EntryBackupAbility.ets",
+        "type": "backup",
+        "exported": false,
+        "metadata": [
+          {
+            "name": "ohos.extension.backup",
+            "resource": "$profile:backup_config"
+          }
+        ]
+      }
+    ]
+  }
+}

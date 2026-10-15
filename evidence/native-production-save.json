@@ -1,0 +1,63 @@
+{
+  "bundle": "com.geanydesk.track1",
+  "hapSha256": "ac788a69cf6d4a9934902cef13e03c2efa91019e1844778f408e839c204c1ac6",
+  "sameBootPidUidBound": true,
+  "signatureVerified": true,
+  "packagedNativeMatchesCurrentProduction": true,
+  "hostCore": 26,
+  "nativeProductionSaveDocument": {
+    "total": 8,
+    "passed": 8,
+    "failed": 0,
+    "skipped": 0,
+    "results": [
+      {
+        "name": "utf8-bom-crlf",
+        "passed": true
+      },
+      {
+        "name": "utf16le-bom-crlf",
+        "passed": true
+      },
+      {
+        "name": "utf16be-bom-crlf",
+        "passed": true
+      },
+      {
+        "name": "edited-utf16le",
+        "passed": true
+      },
+      {
+        "name": "external-conflict-preserves-editor",
+        "passed": true
+      },
+      {
+        "name": "lossy-decode-refused",
+        "passed": true
+      },
+      {
+        "name": "unrepresentable-refused",
+        "passed": true
+      },
+      {
+        "name": "normalize-only-after-commit",
+        "passed": true
+      }
+    ]
+  },
+  "gui": {
+    "keptEditorAfterExternalConflictPrompt": true,
+    "utf16leBomCrlfUnicodeVisible": true,
+    "actualSaveButtonAcknowledged": true
+  },
+  "scope": "community Qt adaptation; not original GTK Geany ABI",
+  "history": {
+    "rawCoreR1": "single launch126 permission denied; no controls ran; released",
+    "appR1": "first3 controls passed then process exited",
+    "appR2": "instrumentation locates exit inside setPlainText",
+    "appR3": "cursor index bounds fixed;8/8 and app stays alive; crash stack unavailable"
+  },
+  "sourceUploaded": false,
+  "communitySubmitted": false,
+  "appGalleryPublished": false
+}

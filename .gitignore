@@ -1,0 +1,11 @@
+/build/
+*.hap
+*.app
+*.hnp
+*.so
+*.p12
+*.p7b
+*.cer
+*.key
+*.exe
+private-signing.json

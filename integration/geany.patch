@@ -1,0 +1,291 @@
+diff --git a/harmony_pc/entry/src/main/cpp/CMakeLists.txt b/harmony_pc/entry/src/main/cpp/CMakeLists.txt
+index 41290ed..dc5b2fa 100644
+--- a/harmony_pc/entry/src/main/cpp/CMakeLists.txt
++++ b/harmony_pc/entry/src/main/cpp/CMakeLists.txt
+@@ -60,0 +61,4 @@ target_link_libraries(entry PRIVATE
++
++if(QT_HOST_MOC)
++    set_target_properties(entry PROPERTIES AUTOMOC_EXECUTABLE "${QT_HOST_MOC}")
++endif()
+diff --git a/harmony_pc/entry/src/main/cpp/geany_qt_harmony.cpp b/harmony_pc/entry/src/main/cpp/geany_qt_harmony.cpp
+index b7229c2..1738c86 100644
+--- a/harmony_pc/entry/src/main/cpp/geany_qt_harmony.cpp
++++ b/harmony_pc/entry/src/main/cpp/geany_qt_harmony.cpp
+@@ -0,0 +1,4 @@
++#include <QJsonArray>
++#include <QJsonObject>
++#include <QUuid>
++#include "TextSaveGuard.h"
+@@ -177 +181 @@ QString normalizedLaunchPath(QString argument)
+-    const QString appDataPrefix = QStringLiteral("/data/app/el2/100/base/org.geany.openharmony/");
++    const QString appDataPrefix = QStringLiteral("/data/app/el2/100/base/com.geanydesk.track1/");
+@@ -188,12 +192,3 @@ QString openHarmonyWritableRoot()
+-    QString root = QStandardPaths::writableLocation(QStandardPaths::DocumentsLocation);
+-    if (root.isEmpty() || root.startsWith(QStringLiteral("/storage/Users/currentUser"))) {
+-        root = QStandardPaths::writableLocation(QStandardPaths::AppDataLocation);
+-    }
+-    if (root.isEmpty() || root.startsWith(QStringLiteral("/storage/Users/currentUser"))) {
+-        root = QDir::home().filePath(QStringLiteral("files/Documents"));
+-    }
+-
+-    QDir dir(root);
+-    if (!dir.exists()) {
+-        dir.mkpath(QStringLiteral("."));
+-    }
++    // Start in this application's sandbox; do not require public-directory ACLs.
++    QDir dir(QStringLiteral("/data/storage/el2/base/files/GeanyDesk"));
++    if (!dir.exists() && !dir.mkpath(QStringLiteral("."))) return QString();
+@@ -224,2 +219,2 @@ QStringList openHarmonyPendingOpenQueueFiles()
+-    candidates << QStringLiteral("/data/app/el2/100/base/org.geany.openharmony/files/geany-pending-open.txt");
+-    candidates << QStringLiteral("/data/app/el2/100/base/org.geany.openharmony/cache/geany-pending-open.txt");
++    candidates << QStringLiteral("/data/app/el2/100/base/com.geanydesk.track1/files/geany-pending-open.txt");
++    candidates << QStringLiteral("/data/app/el2/100/base/com.geanydesk.track1/cache/geany-pending-open.txt");
+@@ -1688 +1683 @@ private:
+-        if (cursorPosition < text.size() && editorBracePair(text.at(cursorPosition), &matching, &direction)) {
++        if (cursorPosition >= 0 && cursorPosition < text.size() && editorBracePair(text.at(cursorPosition), &matching, &direction)) {
+@@ -1691 +1686,2 @@ private:
+-        } else if (cursorPosition > 0 && editorBracePair(text.at(cursorPosition - 1), &matching, &direction)) {
++        } else if (cursorPosition > 0 && cursorPosition <= text.size()
++                && editorBracePair(text.at(cursorPosition - 1), &matching, &direction)) {
+@@ -1785,0 +1782,3 @@ public:
++    TextSaveGuard::Snapshot diskSnapshot;
++    bool utf8Bom = false;
++    bool sourceDecodedSafely = true;
+@@ -1796 +1795 @@ public:
+-        setWindowTitle(QStringLiteral("Geany"));
++        setWindowTitle(QStringLiteral("GeanyDesk - Geany Community Qt Adaptation"));
+@@ -1823,0 +1823,5 @@ public:
++#if defined(Q_OS_OPENHARMONY)
++        if (QApplication::arguments().contains(QStringLiteral("--geany-save-guard-test"))) {
++            QTimer::singleShot(1700, this, [this]() { runSaveIntegrityAcceptance(); });
++        }
++#endif
+@@ -3040,0 +3045,53 @@ private:
++    void runSaveIntegrityAcceptance()
++    {
++#if defined(Q_OS_OPENHARMONY)
++        const QString root = QDir(openHarmonyWritableRoot()).filePath(QStringLiteral("save-guard-") + QUuid::createUuid().toString(QUuid::WithoutBraces));
++        if (!QDir().mkpath(root)) { qWarning() << "GEANY_SAVE_GUARD_SETUP_FAILED"; return; }
++        const bool oldStrip = stripTrailingOnSave, oldFinal = ensureFinalNewlineOnSave;
++        stripTrailingOnSave = false; ensureFinalNewlineOnSave = false;
++        QJsonArray results; int passed = 0;
++        auto record = [&](const QString &name, bool ok) {
++            QJsonObject entry;entry.insert(QStringLiteral("name"),name);entry.insert(QStringLiteral("passed"),ok);results.append(entry);if(ok)++passed;
++            qWarning().noquote() << QStringLiteral("GEANY_SAVE_GUARD %1 %2").arg(name, ok?QStringLiteral("PASS"):QStringLiteral("FAIL"));
++        };
++        auto read = [](const QString &path) { QFile f(path); if(!f.open(QIODevice::ReadOnly))return QByteArray();return f.readAll(); };
++        auto fixture = [&](const QString &name,const QByteArray &bytes) {
++            const QString path=QDir(root).filePath(name);QFile f(path);if(!f.open(QIODevice::WriteOnly)||f.write(bytes)!=bytes.size()){f.close();return QString();}f.close();openPath(path,false);return path;
++        };
++        const QByteArray le=QByteArray::fromHex("fffe2d4e87653dd800de0d000a00"),be=QByteArray::fromHex("feff4e2d6587d83dde00000d000a"),utf8=QByteArray::fromHex("efbbbf")+QString::fromUtf8("中文😀\r\n").toUtf8();
++        const QList<QPair<QString,QByteArray>> cases={{QStringLiteral("utf8-bom-crlf"),utf8},{QStringLiteral("utf16le-bom-crlf"),le},{QStringLiteral("utf16be-bom-crlf"),be}};
++        for(const auto &item:cases){const QString path=fixture(item.first+QStringLiteral(".txt"),item.second);EditorPage *page=currentPage();record(item.first,!path.isEmpty()&&page&&page->path==path&&saveDocument(page,false,true)&&read(path)==item.second);}
++        qWarning() << "GEANY_SAVE_GUARD_STAGE edited-fixture-begin";
++        QString path=fixture(QStringLiteral("edited-utf16le.txt"),le);EditorPage *page=currentPage();
++        qWarning() << "GEANY_SAVE_GUARD_STAGE edited-fixture-ready";
++        if(page){
++            qWarning() << "GEANY_SAVE_GUARD_STAGE edited-set-text-begin";
++            page->editor->setPlainText(QString::fromUtf8("更改😀\n"));
++            qWarning() << "GEANY_SAVE_GUARD_STAGE edited-set-text-end";
++            page->editor->document()->setModified(true);
++            qWarning() << "GEANY_SAVE_GUARD_STAGE edited-modified-end";
++        }
++        record(QStringLiteral("edited-utf16le"),page&&page->path==path&&saveDocument(page,false,true)&&read(path)==QByteArray::fromHex("fffef46639653dd800de0d000a00"));
++        path=fixture(QStringLiteral("external-conflict.txt"),"original\n");page=currentPage();
++        if(page){page->editor->setPlainText(QStringLiteral("ours  "));page->editor->document()->setModified(true);}
++        {QFile f(path);if(f.open(QIODevice::WriteOnly|QIODevice::Truncate))f.write("external\n");}
++        stripTrailingOnSave=true;ensureFinalNewlineOnSave=true;
++        record(QStringLiteral("external-conflict-preserves-editor"),page&&page->path==path&&!saveDocument(page,false,true)&&read(path)=="external\n"&&page->editor->toPlainText()==QStringLiteral("ours  ")&&page->editor->document()->isModified());
++        stripTrailingOnSave=false;ensureFinalNewlineOnSave=false;
++        const QByteArray invalid=QByteArray::fromHex("efbbbfff");path=fixture(QStringLiteral("invalid-utf8.txt"),invalid);page=currentPage();
++        if(page)page->editor->document()->setModified(true);
++        record(QStringLiteral("lossy-decode-refused"),page&&page->path==path&&!saveDocument(page,false,true)&&read(path)==invalid&&page->editor->document()->isModified());
++        path=fixture(QStringLiteral("unrepresentable.txt"),QString::fromUtf8("😀\n").toUtf8());page=currentPage();
++        if(page){page->encodingName=QStringLiteral("ISO-8859-1");page->editor->document()->setModified(true);}
++        record(QStringLiteral("unrepresentable-refused"),page&&page->path==path&&!saveDocument(page,false,true)&&read(path)==QString::fromUtf8("😀\n").toUtf8()&&page->editor->document()->isModified());
++        path=fixture(QStringLiteral("final-newline.txt"),"before\n");page=currentPage();ensureFinalNewlineOnSave=true;
++        if(page){page->editor->setPlainText(QStringLiteral("after"));page->editor->document()->setModified(true);}
++        record(QStringLiteral("normalize-only-after-commit"),page&&page->path==path&&saveDocument(page,false,true)&&read(path)=="after\n"&&page->editor->toPlainText()==QStringLiteral("after\n")&&!page->editor->document()->isModified());
++        stripTrailingOnSave=oldStrip;ensureFinalNewlineOnSave=oldFinal;
++        QJsonObject report;report.insert(QStringLiteral("total"),results.size());report.insert(QStringLiteral("passed"),passed);report.insert(QStringLiteral("failed"),results.size()-passed);report.insert(QStringLiteral("skipped"),0);report.insert(QStringLiteral("context"),QStringLiteral("installed app production saveDocument"));report.insert(QStringLiteral("results"),results);
++        const QString reportPath=QDir(root).filePath(QStringLiteral("production-save-report.json"));QFile file(reportPath);if(file.open(QIODevice::WriteOnly))file.write(QJsonDocument(report).toJson());
++        qWarning().noquote() << QStringLiteral("GEANY_SAVE_GUARD_TERMINAL passed=%1 total=%2 report=%3").arg(passed).arg(results.size()).arg(reportPath);
++        openPath(QDir(root).filePath(QStringLiteral("edited-utf16le.txt")),false);
++#endif
++    }
++
+@@ -5473,0 +5531,3 @@ private:
++        page->diskSnapshot = TextSaveGuard::fromBytes(bytes);
++        page->utf8Bom = bytes.startsWith("\xEF\xBB\xBF");
++        page->sourceDecodedSafely = TextSaveGuard::validDecode(bytes, page->encodingName);
+@@ -5941,15 +6001,4 @@ private:
+-        if (!createBackupForSave(path)) {
+-            return false;
+-        }
+-
+-#if defined(Q_OS_OPENHARMONY)
+-        const QByteArray bytes = page->editor->toPlainText().toUtf8();
+-        QFile file(path);
+-        if (!file.open(QIODevice::WriteOnly | QIODevice::Truncate)) {
+-            appendOutput(QStringLiteral("Save failed: %1").arg(file.errorString()));
+-            statusBar()->showMessage(QStringLiteral("Save failed: %1").arg(file.errorString()), 3500);
+-            return false;
+-        }
+-        if (file.write(bytes) != bytes.size()) {
+-            appendOutput(QStringLiteral("Save failed: %1").arg(file.errorString()));
+-            statusBar()->showMessage(QStringLiteral("Save failed: %1").arg(file.errorString()), 3500);
++        QString error;
++        if (!page->sourceDecodedSafely) {
++            appendOutput(QStringLiteral("Save refused: source encoding was not decoded losslessly. Reload using the correct encoding."));
++            statusBar()->showMessage(QStringLiteral("Save refused: reload with the correct source encoding"), 5000);
+@@ -5958,7 +6007,5 @@ private:
+-        file.close();
+-#else
+-        const QByteArray bytes = encodeText(textForSaving(page), page->encodingName);
+-        QSaveFile file(path);
+-        if (!file.open(QIODevice::WriteOnly)) {
+-            QMessageBox::warning(this, QStringLiteral("Save failed"), file.errorString());
+-            return false;
++        TextSaveGuard::Snapshot expected = page->diskSnapshot;
++        if (page->path.isEmpty() || QFileInfo(path).absoluteFilePath() != QFileInfo(page->path).absoluteFilePath()) {
++            expected = TextSaveGuard::capture(path, &error);
++            if (expected.exists && QMessageBox::question(this, QStringLiteral("Replace existing file"),
++                    QStringLiteral("Replace this existing file?\n%1").arg(path), QMessageBox::Yes | QMessageBox::Cancel) != QMessageBox::Yes) return false;
+@@ -5966,2 +6013,3 @@ private:
+-        if (file.write(bytes) != bytes.size()) {
+-            QMessageBox::warning(this, QStringLiteral("Save failed"), file.errorString());
++        QByteArray bytes;
++        if (!TextSaveGuard::encode(textForSaving(page, false), page->encodingName, page->utf8Bom, bytes, error)) {
++            appendOutput(QStringLiteral("Save refused: %1").arg(error));
+@@ -5970,2 +6018,4 @@ private:
+-        if (!file.commit()) {
+-            QMessageBox::warning(this, QStringLiteral("Save failed"), file.errorString());
++        if (!createBackupForSave(path)) return false;
++        if (!TextSaveGuard::saveAtomic(path, bytes, expected, error)) {
++            appendOutput(QStringLiteral("Save failed: %1").arg(error));
++            statusBar()->showMessage(QStringLiteral("Save failed: %1").arg(error), 5000);
+@@ -5974 +6024,3 @@ private:
+-#endif
++        // Normalize visible text only after the file commit succeeded.
++        textForSaving(page, true);
++        page->diskSnapshot = TextSaveGuard::fromBytes(bytes);
+@@ -6789,0 +6842,3 @@ private:
++        page->diskSnapshot = TextSaveGuard::fromBytes(bytes);
++        page->utf8Bom = bytes.startsWith("\xEF\xBB\xBF");
++        page->sourceDecodedSafely = TextSaveGuard::validDecode(bytes, page->encodingName);
+@@ -6877,0 +6933,3 @@ private:
++        page->diskSnapshot = TextSaveGuard::fromBytes(bytes);
++        page->utf8Bom = bytes.startsWith("\xEF\xBB\xBF");
++        page->sourceDecodedSafely = TextSaveGuard::validDecode(bytes, page->encodingName);
+@@ -8388,0 +8447 @@ private:
++            page->diskSnapshot = TextSaveGuard::capture(path);
+diff --git a/harmony_pc/entry/src/main/ets/entryability/EntryAbility.ets b/harmony_pc/entry/src/main/ets/entryability/EntryAbility.ets
+index 314a3d3..0dc21f5 100644
+--- a/harmony_pc/entry/src/main/ets/entryability/EntryAbility.ets
++++ b/harmony_pc/entry/src/main/ets/entryability/EntryAbility.ets
+@@ -9 +8,0 @@ import fileUri from '@ohos.file.fileuri';
+-import abilityAccessCtrl, { Permissions } from '@ohos.abilityAccessCtrl';
+@@ -23 +22 @@ export default class EntryAbility extends UIAbility {
+-    hilog.info(this.domain, this.tag, 'onCreate want uri=%{public}s parameters=%{public}s',
++    hilog.info(this.domain, this.tag, 'onCreate want uri=%{private}s parameters=%{private}s',
+@@ -47 +46 @@ export default class EntryAbility extends UIAbility {
+-    hilog.info(this.domain, this.tag, '%{public}s', 'Ability onDestroy');
++    hilog.info(this.domain, this.tag, '%{private}s', 'Ability onDestroy');
+@@ -51 +50 @@ export default class EntryAbility extends UIAbility {
+-    hilog.info(this.domain, this.tag, '%{public}s', 'Ability onWindowStageCreate');
++    hilog.info(this.domain, this.tag, '%{private}s', 'Ability onWindowStageCreate');
+@@ -56 +54,0 @@ export default class EntryAbility extends UIAbility {
+-    await this.requestUserFilePermissions();
+@@ -75 +73 @@ export default class EntryAbility extends UIAbility {
+-      hilog.error(this.domain, this.tag, 'loadContent failed: %{public}s', JSON.stringify(error));
++      hilog.error(this.domain, this.tag, 'loadContent failed: %{private}s', JSON.stringify(error));
+@@ -84 +82 @@ export default class EntryAbility extends UIAbility {
+-      hilog.info(this.domain, this.tag, '%{public}s', 'Configured Harmony PC editor window size');
++      hilog.info(this.domain, this.tag, '%{private}s', 'Configured Harmony PC editor window size');
+@@ -86,15 +84 @@ export default class EntryAbility extends UIAbility {
+-      hilog.warn(this.domain, this.tag, 'configurePcWindow failed: %{public}s', JSON.stringify(error));
+-    }
+-  }
+-
+-  private async requestUserFilePermissions() {
+-    const permissions: Permissions[] = [
+-      'ohos.permission.READ_WRITE_DOCUMENTS_DIRECTORY',
+-      'ohos.permission.READ_WRITE_DOWNLOAD_DIRECTORY'
+-    ];
+-    try {
+-      const atManager = abilityAccessCtrl.createAtManager();
+-      const result = await atManager.requestPermissionsFromUser(this.context, permissions);
+-      hilog.info(this.domain, this.tag, 'File permission request result: %{public}s', JSON.stringify(result));
+-    } catch (error) {
+-      hilog.warn(this.domain, this.tag, 'File permission request failed: %{public}s', JSON.stringify(error));
++      hilog.warn(this.domain, this.tag, 'configurePcWindow failed: %{private}s', JSON.stringify(error));
+@@ -125 +109 @@ export default class EntryAbility extends UIAbility {
+-        hilog.info(this.domain, this.tag, 'Queued native open path %{public}s via %{public}s', path, queuePath);
++        hilog.info(this.domain, this.tag, 'Queued native open path %{private}s via %{private}s', path, queuePath);
+@@ -127 +111 @@ export default class EntryAbility extends UIAbility {
+-        hilog.warn(this.domain, this.tag, 'Queue native open path failed: %{public}s', JSON.stringify(error));
++        hilog.warn(this.domain, this.tag, 'Queue native open path failed: %{private}s', JSON.stringify(error));
+@@ -209 +193 @@ export default class EntryAbility extends UIAbility {
+-      hilog.info(this.domain, this.tag, 'Cached external URI to %{public}s', destinationPath);
++      hilog.info(this.domain, this.tag, 'Cached external URI to %{private}s', destinationPath);
+@@ -212 +196 @@ export default class EntryAbility extends UIAbility {
+-      hilog.warn(this.domain, this.tag, 'fs.copy failed for URI %{public}s: %{public}s',
++      hilog.warn(this.domain, this.tag, 'fs.copy failed for URI %{private}s: %{private}s',
+@@ -218 +202 @@ export default class EntryAbility extends UIAbility {
+-      hilog.info(this.domain, this.tag, 'Copied external URI to %{public}s', destinationPath);
++      hilog.info(this.domain, this.tag, 'Copied external URI to %{private}s', destinationPath);
+@@ -221 +205 @@ export default class EntryAbility extends UIAbility {
+-      hilog.warn(this.domain, this.tag, 'fs.copyFile failed for URI %{public}s: %{public}s',
++      hilog.warn(this.domain, this.tag, 'fs.copyFile failed for URI %{private}s: %{private}s',
+@@ -228 +212 @@ export default class EntryAbility extends UIAbility {
+-        hilog.info(this.domain, this.tag, 'Copied external file URI path to %{public}s', destinationPath);
++        hilog.info(this.domain, this.tag, 'Copied external file URI path to %{private}s', destinationPath);
+@@ -231 +215 @@ export default class EntryAbility extends UIAbility {
+-        hilog.warn(this.domain, this.tag, 'fs.copyFile path fallback failed for URI %{public}s: %{public}s',
++        hilog.warn(this.domain, this.tag, 'fs.copyFile path fallback failed for URI %{private}s: %{private}s',
+@@ -236 +220 @@ export default class EntryAbility extends UIAbility {
+-        hilog.warn(this.domain, this.tag, 'Using external file URI path without cache: %{public}s', localPath);
++        hilog.warn(this.domain, this.tag, 'Using external file URI path without cache: %{private}s', localPath);
+@@ -248 +232 @@ export default class EntryAbility extends UIAbility {
+-    hilog.info(this.domain, this.tag, 'launchParamSet want uri=%{public}s parameters=%{public}s',
++    hilog.info(this.domain, this.tag, 'launchParamSet want uri=%{private}s parameters=%{private}s',
+@@ -263 +247 @@ export default class EntryAbility extends UIAbility {
+-    hilog.info(this.domain, this.tag, 'launchParams: %{public}s', this.launchParams);
++    hilog.info(this.domain, this.tag, 'launchParams: %{private}s', this.launchParams);
+@@ -267 +251 @@ export default class EntryAbility extends UIAbility {
+-    hilog.info(this.domain, this.tag, '%{public}s', 'Ability onWindowStageDestroy');
++    hilog.info(this.domain, this.tag, '%{private}s', 'Ability onWindowStageDestroy');
+@@ -272 +256 @@ export default class EntryAbility extends UIAbility {
+-    hilog.info(this.domain, this.tag, '%{public}s', 'Ability onForeground');
++    hilog.info(this.domain, this.tag, '%{private}s', 'Ability onForeground');
+@@ -277 +261 @@ export default class EntryAbility extends UIAbility {
+-    hilog.info(this.domain, this.tag, '%{public}s', 'Ability onBackground');
++    hilog.info(this.domain, this.tag, '%{private}s', 'Ability onBackground');
+@@ -281 +265 @@ export default class EntryAbility extends UIAbility {
+-    hilog.info(this.domain, this.tag, 'onNewWant uri=%{public}s parameters=%{public}s',
++    hilog.info(this.domain, this.tag, 'onNewWant uri=%{private}s parameters=%{private}s',
+diff --git a/harmony_pc/entry/src/main/module.json5 b/harmony_pc/entry/src/main/module.json5
+index 39248a2..41a2753 100644
+--- a/harmony_pc/entry/src/main/module.json5
++++ b/harmony_pc/entry/src/main/module.json5
+@@ -14,15 +14 @@
+-    "requestPermissions": [
+-      {
+-        "name": "ohos.permission.FILE_ACCESS_PERSIST"
+-      },
+-      {
+-        "name": "ohos.permission.READ_WRITE_DOCUMENTS_DIRECTORY",
+-        "reason": "$string:reason_user_dirs",
+-        "usedScene": { "abilities": ["EntryAbility"], "when": "inuse" }
+-      },
+-      {
+-        "name": "ohos.permission.READ_WRITE_DOWNLOAD_DIRECTORY",
+-        "reason": "$string:reason_user_dirs",
+-        "usedScene": { "abilities": ["EntryAbility"], "when": "inuse" }
+-      }
+-    ],
++    "requestPermissions": [],
+@@ -138 +124 @@
+-}
++}
+\ No newline at end of file

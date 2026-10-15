@@ -1,0 +1,26 @@
+{
+  "bundle": "com.geanydesk.track1",
+  "version": "1.0.1",
+  "usbRun": "r4",
+  "usbHapSha256": "6834e8213897a234ade53f720fe6e749c876b4a744321c62111b83c7c74e9696",
+  "sameBootPidUidBound": true,
+  "gui": {
+    "editedTextVisible": true,
+    "savedFileViaActualDialog": true,
+    "savedStatusAndCleanTabVisible": true,
+    "ownDirectoryOnly": true,
+    "privacyAndLicenseDialogVisible": true,
+    "emojiInputTransport": "Emoji input became question marks in this GUI transport; no fresh emoji assertion"
+  },
+  "history": {
+    "r3ProductionSaveDocument": "8/8, not rerun in R4",
+    "hostCore": "26/26 historical, not rerun"
+  },
+  "formalSignatureVerified": true,
+  "releasePayloadFilesEqual": 23,
+  "formalReleaseDirectlyExecuted": false,
+  "requestedPermissions": [],
+  "ownedProcessReleased": true,
+  "reviewSubmitted": false,
+  "published": false
+}

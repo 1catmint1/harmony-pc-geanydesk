@@ -1,0 +1,28 @@
+{
+  "bundle": "com.geanydesk.track1",
+  "baseline": "c0db47b78d0e38d320cdd26782995d7945b81e63",
+  "hapSha256": "906f7c33babbeef4bf6cbf82fb628a546a966ccc56b724c28920149f580c91d4",
+  "bytes": 27083118,
+  "outputKind": "unsigned HAP",
+  "permissions": [],
+  "productionSourceMatchesProjection": {
+    "geany_qt_harmony.cpp": "c2f3077637fd57d5cce85182e19d62a7381fd24b40be9d4b96490fc28d882729",
+    "TextSaveGuard.h": "e9df51afbbdbd852d5a542e53ada03300ecdf414c1363bb30348adc9be9fd0bf",
+    "CMakeLists.txt": "0a1c48b784adf31da877561a34e3f0d774dabaaec8d920eee3c457cd662a75e9"
+  },
+  "packagedNativeSha256": "b8e5b8c28df72fdc1874289e582a92c74119614d86ee4b66707269892de6c251",
+  "loadableNativeSectionsMatchLinkedArtifact": true,
+  "hostCore": {
+    "total": 26,
+    "passed": 26,
+    "failed": 0,
+    "skipped": 0
+  },
+  "preparedAppProductionControls": 8,
+  "appProductionControlsExecuted": false,
+  "signed": false,
+  "nativeAccepted": false,
+  "sourceUploaded": false,
+  "communitySubmitted": false,
+  "appGalleryPublished": false
+}

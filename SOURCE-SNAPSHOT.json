@@ -1,0 +1,11 @@
+{
+  "product": "GeanyDesk",
+  "sourceRepository": "https://atomgit.com/2301_80739235/geanydesk-geany-adaptation",
+  "sourceCommit": "d861a618ffcab57042a2ee01e74a12a6f8a70909",
+  "sourceSelection": [
+    "current committed source tree"
+  ],
+  "runtimeArtifactsExcluded": true,
+  "privateSigningExcluded": true,
+  "preparedAt": "2026-10-15T21:03:54.740838+00:00"
+}

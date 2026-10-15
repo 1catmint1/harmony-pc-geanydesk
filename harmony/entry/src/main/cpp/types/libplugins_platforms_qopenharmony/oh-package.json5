@@ -1,0 +1,7 @@
+{
+  "name": "libplugins_platforms_qopenharmony.so",
+  "types": "./Index.d.ts",
+  "version": "1.0.0",
+  "description": "Qt OpenHarmony platform plugin declaration."
+}
+

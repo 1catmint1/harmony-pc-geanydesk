@@ -1,0 +1,36 @@
+[
+  {
+    "name": "qt5-base",
+    "page": "https://packages.msys2.org/packages/mingw-w64-ucrt-x86_64-qt5-base",
+    "download": "https://repo.msys2.org/mingw/ucrt64/mingw-w64-ucrt-x86_64-qt5-base-5.15.19%2Bkde%2Br96-1-any.pkg.tar.zst",
+    "sha256": "0a02f5e14552323675741edc5c85e2077efa716a47841bc7544a549be65c5abc",
+    "selectedEntries": [
+      "ucrt64/include/QtCore/",
+      "ucrt64/lib/libQt5Core.dll.a",
+      "ucrt64/bin/Qt5Core.dll"
+    ]
+  },
+  {
+    "name": "icu",
+    "page": "https://packages.msys2.org/packages/mingw-w64-ucrt-x86_64-icu",
+    "download": "https://repo.msys2.org/mingw/ucrt64/mingw-w64-ucrt-x86_64-icu-78.3-4-any.pkg.tar.zst",
+    "sha256": "db9282bbd0a2e74c31d66af6bd89eb68d647a09f721eef4c661768588dca4324",
+    "selectedEntries": [
+      "ucrt64/bin/libicudt78.dll",
+      "ucrt64/bin/libicuin78.dll",
+      "ucrt64/bin/libicuio78.dll",
+      "ucrt64/bin/libicutest78.dll",
+      "ucrt64/bin/libicutu78.dll",
+      "ucrt64/bin/libicuuc78.dll"
+    ]
+  },
+  {
+    "name": "double-conversion",
+    "page": "https://packages.msys2.org/packages/mingw-w64-ucrt-x86_64-double-conversion",
+    "download": "https://repo.msys2.org/mingw/ucrt64/mingw-w64-ucrt-x86_64-double-conversion-3.4.0-1-any.pkg.tar.zst",
+    "sha256": "b3abc4326bc695fe97cf29389513badf65a1ac3dc2841c71a1340edd483af17c",
+    "selectedEntries": [
+      "ucrt64/bin/libdouble-conversion.dll"
+    ]
+  }
+]

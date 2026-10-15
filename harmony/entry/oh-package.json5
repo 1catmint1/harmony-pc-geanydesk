@@ -1,0 +1,13 @@
+{
+  "name": "entry",
+  "version": "1.0.0",
+  "description": "Geany HarmonyOS Qt entry module.",
+  "main": "",
+  "author": "",
+  "license": "GPL-2.0-or-later",
+  "dependencies": {
+    "libentry.so": "file:./src/main/cpp/types/libentry",
+    "libplugins_platforms_qopenharmony.so": "file:./src/main/cpp/types/libplugins_platforms_qopenharmony"
+  }
+}
+

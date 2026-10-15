@@ -1,0 +1,11 @@
+{
+  "bundle": "com.geanydesk.track1",
+  "type": "debug",
+  "signatureVerified": true,
+  "profileVerified": true,
+  "targetIncluded": true,
+  "hapSha256": "ac788a69cf6d4a9934902cef13e03c2efa91019e1844778f408e839c204c1ac6",
+  "bytes": 27412504,
+  "targetExecuted": false,
+  "createdAt": "2026-10-15T09:15:32.543Z"
+}

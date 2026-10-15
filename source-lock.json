@@ -1,0 +1,22 @@
+{
+  "upstream": "https://gitcode.com/OpenHarmonyPCDeveloper/ohos_geany",
+  "commit": "c0db47b78d0e38d320cdd26782995d7945b81e63",
+  "baselineFilesSha256": {
+    "harmony_pc/entry/src/main/cpp/CMakeLists.txt": "9b97262c2b4d5d9316b0203be85e1e0ec18c7d50c2e758aae5be9c0c1037a338",
+    "harmony_pc/entry/src/main/cpp/geany_qt_harmony.cpp": "b8ad131136a820928ba498dc94d9e816450f08ca812aedc62ae2d926004f8f7a",
+    "harmony_pc/entry/src/main/ets/entryability/EntryAbility.ets": "025c99005a0f756eb722cdd3ac0e0163963139e2caa8d0b64bdef3976fba8275",
+    "harmony_pc/entry/src/main/module.json5": "08bf7070df63fd02eca880be70eb7288b13b07d7b32ca9573352e6d929d45c05"
+  },
+  "license": "GPL-2.0-or-later",
+  "scope": "new save helper, host controls and integration patch; no inherited runtime binaries",
+  "release": {
+    "version": "1.0.1",
+    "versionCode": 1000001,
+    "source": "harmony/",
+    "scope": "complete community Qt frontend and save integrity changes; not GTK binary/plugin ABI",
+    "autoValidationEntryRemoved": true,
+    "requestedPermissions": [],
+    "qtCorrespondingSource": "third_party/SOURCE-MANIFEST.json",
+    "qtReferenceSdkRebuilt": false
+  }
+}

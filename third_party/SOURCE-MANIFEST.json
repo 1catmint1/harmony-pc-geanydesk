@@ -1,0 +1,32 @@
+{
+  "qtbase": {
+    "repository": "https://github.com/qt/qtbase",
+    "tag": "v5.15.12-lts-lgpl",
+    "commit": "e4391422574aa9aa89fece74f16c07c609cbbae2"
+  },
+  "openharmonyPort": {
+    "repository": "https://atomgit.com/openharmony-sig/qt",
+    "tag": "Alpha_v9",
+    "commit": "044e71e63b15cf03067f61022d6e4b27e9cb8c21"
+  },
+  "archives": [
+    {
+      "file": "third_party/qtbase-5.15.12-source.tar.gz",
+      "sha256": "c3a00b30573b6bcfa9d76a30cb2a69f9f280eccb614fe8f1a502edc77b56def2",
+      "bytes": 68972777,
+      "uncompressedTarSha256": "088ab0ca04d4e594477d197302d401f1b2e17b097c637fd32792801835631e7e",
+      "kind": "unmodified public source archive from verified upstream Git tag; not runtime binaries"
+    },
+    {
+      "file": "third_party/qt-openharmony-alpha-v9-source.tar.gz",
+      "sha256": "3db989512760133973f30ac909387c6909d1a85de6cbac2067c0e668b8905093",
+      "bytes": 1471080,
+      "uncompressedTarSha256": "c2cd0f3bb4ffad8113253ae392bb1d584d6a3cc9a9daf94097d61124231ed8a3",
+      "kind": "unmodified public source archive from verified upstream Git tag; not runtime binaries"
+    }
+  ],
+  "patchCheckedAgainstPinnedSource": true,
+  "archiveExportIgnoreNote": "Qt git archive excludes .gitignore; restore provided prerequisite before applying the unmodified port patch. Prefer cloning exact upstream commits for repository metadata.",
+  "binaryCorrespondence": "Existing Qt five libraries and five used plugins match the official Alpha_v9 macOS release; rebuilding the SDK itself has not been performed here.",
+  "distributionStatus": "local prepared; remote source upload pending"
+}

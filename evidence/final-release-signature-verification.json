@@ -1,0 +1,33 @@
+{
+  "bundle": "com.geanydesk.track1",
+  "version": "1.0.1",
+  "type": "release",
+  "distributionType": "app_gallery",
+  "noDeviceBinding": true,
+  "allowedAcls": [],
+  "signatureVerified": true,
+  "profileVerified": true,
+  "artifacts": {
+    "hap": {
+      "sha256": "ea687d214c2120d139affcee313c33d02915e733eefb991ec92b4d9c0c7c61a8",
+      "bytes": 25523804,
+      "officialSignatureVerified": true,
+      "embeddedProfileVerified": true,
+      "embeddedProfileSha256": "43e3e972e6a647c2d25280a691c58b5bc12a3227dee140b03da9d561ebe342c7",
+      "certificateMatches": true
+    },
+    "app": {
+      "sha256": "186d611b89950232731dd1e228bc9229788eac4cb622ed02c3e30bed597cfb9a",
+      "bytes": 10435526,
+      "officialSignatureVerified": true,
+      "embeddedProfileVerified": true,
+      "embeddedProfileSha256": "43e3e972e6a647c2d25280a691c58b5bc12a3227dee140b03da9d561ebe342c7",
+      "certificateMatches": true
+    }
+  },
+  "hapSha256": "ea687d214c2120d139affcee313c33d02915e733eefb991ec92b4d9c0c7c61a8",
+  "targetExecuted": false,
+  "appGallerySubmitted": false,
+  "appGalleryPublished": false,
+  "createdAt": "2026-10-15T17:54:33.834Z"
+}

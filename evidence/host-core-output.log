@@ -1,0 +1,27 @@
+CONTROL utf8-crlf PASS
+CONTROL utf8-bom PASS
+CONTROL utf16le-bom PASS
+CONTROL utf16be-bom PASS
+CONTROL utf16-no-bom PASS
+CONTROL latin1-valid PASS
+CONTROL unrepresentable-not-substituted PASS
+CONTROL unknown-encoding PASS
+CONTROL unpaired-surrogate PASS
+CONTROL invalid-utf8 PASS
+CONTROL truncated-utf8 PASS
+CONTROL odd-utf16 PASS
+CONTROL valid-unicode-decode PASS
+CONTROL valid-bom-decode PASS
+CONTROL new-file-atomic PASS
+CONTROL existing-file-atomic PASS
+CONTROL same-size-external-change PASS
+CONTROL changed-during-save PASS
+CONTROL external-created-file PASS
+CONTROL external-deleted-file PASS
+CONTROL unknown-baseline-refused PASS
+CONTROL directory-target-refused PASS
+CONTROL empty-file-save PASS
+CONTROL symlink-target-refused PASS
+CONTROL size-limit-before-read PASS
+CONTROL failed-save-temporary-cleanup PASS
+SUMMARY {"total":26,"passed":26,"failed":0,"skipped":0}

@@ -1,0 +1,7 @@
+cmake_minimum_required(VERSION 3.16)
+project(GeanyDeskSaveControls LANGUAGES CXX)
+find_package(Qt5 5.15 REQUIRED COMPONENTS Core)
+add_executable(geany-save-controls tests/test-save-core.cpp)
+target_compile_features(geany-save-controls PRIVATE cxx_std_17)
+target_include_directories(geany-save-controls PRIVATE modules)
+target_link_libraries(geany-save-controls PRIVATE Qt5::Core)

@@ -1,0 +1,20 @@
+{
+  "string": [
+    {
+      "name": "module_desc",
+      "value": "Geany Qt module"
+    },
+    {
+      "name": "EntryAbility_desc",
+      "value": "Geany"
+    },
+    {
+      "name": "EntryAbility_label",
+      "value": "GeanyDesk"
+    },
+    {
+      "name": "reason_user_dirs",
+      "value": "Geany needs access to Documents and Downloads so you can open and save source files from its editor dialogs."
+    }
+  ]
+}
